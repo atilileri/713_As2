@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE_CPU", "ACE_CPU\ACE_CPU.vcxproj", "{CFC2026F-0C0D-420A-9E1D-3AC9F521B729}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE_CUDA", "ACE_CUDA\ACE_CUDA.vcxproj", "{7E285F83-ED7A-4927-B98A-87784363E34A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE_ORG", "ACE_ORG\ACE_ORG.vcxproj", "{9318731F-298C-440E-9348-0BE4E633E324}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CFC2026F-0C0D-420A-9E1D-3AC9F521B729}.Debug|x64.ActiveCfg = Debug|x64
+		{CFC2026F-0C0D-420A-9E1D-3AC9F521B729}.Debug|x64.Build.0 = Debug|x64
+		{CFC2026F-0C0D-420A-9E1D-3AC9F521B729}.Release|x64.ActiveCfg = Release|x64
+		{CFC2026F-0C0D-420A-9E1D-3AC9F521B729}.Release|x64.Build.0 = Release|x64
+		{7E285F83-ED7A-4927-B98A-87784363E34A}.Debug|x64.ActiveCfg = Debug|x64
+		{7E285F83-ED7A-4927-B98A-87784363E34A}.Debug|x64.Build.0 = Debug|x64
+		{7E285F83-ED7A-4927-B98A-87784363E34A}.Release|x64.ActiveCfg = Release|x64
+		{7E285F83-ED7A-4927-B98A-87784363E34A}.Release|x64.Build.0 = Release|x64
+		{9318731F-298C-440E-9348-0BE4E633E324}.Debug|x64.ActiveCfg = Debug|x64
+		{9318731F-298C-440E-9348-0BE4E633E324}.Debug|x64.Build.0 = Debug|x64
+		{9318731F-298C-440E-9348-0BE4E633E324}.Release|x64.ActiveCfg = Release|x64
+		{9318731F-298C-440E-9348-0BE4E633E324}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {707B03AA-CCDB-4027-8630-F7DFACA53297}
+	EndGlobalSection
+EndGlobal

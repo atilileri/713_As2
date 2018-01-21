@@ -9,6 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE_CUDA", "ACE_CUDA\ACE_CU
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE_ORG", "ACE_ORG\ACE_ORG.vcxproj", "{9318731F-298C-440E-9348-0BE4E633E324}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ACE_THRUST", "ACE_THRUST\ACE_THRUST.vcxproj", "{7441B910-B9DF-4026-85AE-B3C049E6DE73}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "blgn", "blgn\blgn.vcxproj", "{133F1CCF-E3B9-4D4F-A487-5AFD38B75ECF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +31,14 @@ Global
 		{9318731F-298C-440E-9348-0BE4E633E324}.Debug|x64.Build.0 = Debug|x64
 		{9318731F-298C-440E-9348-0BE4E633E324}.Release|x64.ActiveCfg = Release|x64
 		{9318731F-298C-440E-9348-0BE4E633E324}.Release|x64.Build.0 = Release|x64
+		{7441B910-B9DF-4026-85AE-B3C049E6DE73}.Debug|x64.ActiveCfg = Debug|x64
+		{7441B910-B9DF-4026-85AE-B3C049E6DE73}.Debug|x64.Build.0 = Debug|x64
+		{7441B910-B9DF-4026-85AE-B3C049E6DE73}.Release|x64.ActiveCfg = Release|x64
+		{7441B910-B9DF-4026-85AE-B3C049E6DE73}.Release|x64.Build.0 = Release|x64
+		{133F1CCF-E3B9-4D4F-A487-5AFD38B75ECF}.Debug|x64.ActiveCfg = Debug|x64
+		{133F1CCF-E3B9-4D4F-A487-5AFD38B75ECF}.Debug|x64.Build.0 = Debug|x64
+		{133F1CCF-E3B9-4D4F-A487-5AFD38B75ECF}.Release|x64.ActiveCfg = Release|x64
+		{133F1CCF-E3B9-4D4F-A487-5AFD38B75ECF}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

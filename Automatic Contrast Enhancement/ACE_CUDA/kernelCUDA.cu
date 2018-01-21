@@ -30,16 +30,16 @@ void
 WritePGM(char * sFileName, Npp8u * pDst_Host, int nWidth, int nHeight, int nMaxGray);
 
 __global__ void 
-Min8uGPU(Npp8u * pSrc_Dev, Npp8u * pMin_Dev);
+Min8uTHR(Npp8u * pSrc_Dev, Npp8u * pMin_Dev);
 
 __global__ void 
-Max8uGPU(Npp8u * pSrc_Dev, Npp8u * pMax_Dev);
+Max8uTHR(Npp8u * pSrc_Dev, Npp8u * pMax_Dev);
 
 __global__ void 
-SubMin8uGPU(Npp8u * pDst_Dev, Npp8u * pSrc_Dev, Npp8u nMin_Dev);
+SubMin8uTHR(Npp8u * pDst_Dev, Npp8u * pSrc_Dev, Npp8u nMin_Dev);
 
 __global__ void 
-MulDiv8uGPU(Npp8u * pDst_Dev, Npp8u nConstant, int nScaleFactorMinus1);
+MulDiv8uTHR(Npp8u * pDst_Dev, Npp8u nConstant, int nScaleFactorMinus1);
 
 #define DIM 512
 
@@ -79,23 +79,25 @@ main(int argc, char ** argv)
 	dim3 dimBlockHalf(nWidth / 2);
 	dim3 dimBlock(nWidth);
 	cudaStream_t stream1, stream2;
-	cudaStreamCreate(&stream1);	cudaStreamCreate(&stream2);	size_t sharedMemSize = nWidth * sizeof(Npp8u);
+	cudaStreamCreate(&stream1);
+	cudaStreamCreate(&stream2);
+	size_t sharedMemSize = nWidth * sizeof(Npp8u);
 
 	//start counter for performance mesaurements
 	StartCounter();
 
 	// Compute the min and the max.
-	Min8uGPU << <dimGrid, dimBlockHalf, sharedMemSize, stream1 >> > (pSrc_Dev, pMin_Dev);
-	Max8uGPU << <dimGrid, dimBlockHalf, sharedMemSize, stream2 >> > (pSrc_Dev, pMax_Dev);
-	Min8uGPU << <1, dimBlockHalf, sharedMemSize, stream1 >> > (pMin_Dev, pMin_Dev);
-	Max8uGPU << <1, dimBlockHalf, sharedMemSize, stream2 >> > (pMax_Dev, pMax_Dev);
+	Min8uTHR << <dimGrid, dimBlockHalf, sharedMemSize, stream1 >> > (pSrc_Dev, pMin_Dev);
+	Max8uTHR << <dimGrid, dimBlockHalf, sharedMemSize, stream2 >> > (pSrc_Dev, pMax_Dev);
+	Min8uTHR << <1, dimBlockHalf, sharedMemSize, stream1 >> > (pMin_Dev, pMin_Dev);
+	Max8uTHR << <1, dimBlockHalf, sharedMemSize, stream2 >> > (pMax_Dev, pMax_Dev);
 	
 	// get max and min to host
 	cudaMemcpy(&nMin_Host, pMin_Dev, sizeof(Npp8u) * 512, cudaMemcpyDeviceToHost);
 	cudaMemcpy(&nMax_Host, pMax_Dev, sizeof(Npp8u) * 512, cudaMemcpyDeviceToHost);
 
 	// Subtract Min
-	SubMin8uGPU << <dimGrid, dimBlock, 0, stream1 >> > (pDst_Dev, pSrc_Dev, nMin_Host[0]);
+	SubMin8uTHR << <dimGrid, dimBlock, 0, stream1 >> > (pDst_Dev, pSrc_Dev, nMin_Host[0]);
 
 	// Compute the optimal nConstant and nScaleFactor for integer operation see GTC 2013 Lab NPP.pptx for explanation
 	// I will prefer integer arithmetic, Instead of using 255.0f / (nMax_Host - nMin_Host) directly
@@ -109,7 +111,7 @@ main(int argc, char ** argv)
 	Npp8u nConstant = static_cast<Npp8u>(255.0f / (nMax_Host[0] - nMin_Host[0]) * (nPower / 2));
 
 	// multiply by nConstant and divide by 2 ^ nScaleFactor-1
-	MulDiv8uGPU << <dimGrid, dimBlock, 0, stream1 >> > (pDst_Dev, nConstant, nScaleFactor - 1);
+	MulDiv8uTHR << <dimGrid, dimBlock, 0, stream1 >> > (pDst_Dev, nConstant, nScaleFactor - 1);
 
 	std::cout << "Duration of CUDA Run: " << GetCounter() << " microseconds" << std::endl;
 
@@ -196,7 +198,7 @@ WritePGM(char * sFileName, Npp8u * pDst_Host, int nWidth, int nHeight, int nMaxG
 //since syncthreads does not work inter-blocks, i will call this function twice
 //first with 512*512 element and last with 512 elements
 __global__ void 
-Min8uGPU(Npp8u * pSrc_Dev, Npp8u * pMin_Dev)
+Min8uTHR(Npp8u * pSrc_Dev, Npp8u * pMin_Dev)
 {
 	extern __shared__ Npp8u sdata[];
 	//// each thread loads one element from global to shared mem
@@ -236,7 +238,7 @@ Min8uGPU(Npp8u * pSrc_Dev, Npp8u * pMin_Dev)
 //since syncthreads does not work inter-blocks, i will call this function twice
 //first with 512*512 element and last with 512 elements
 __global__ void 
-Max8uGPU(Npp8u * pSrc_Dev, Npp8u * pMax_Dev)
+Max8uTHR(Npp8u * pSrc_Dev, Npp8u * pMax_Dev)
 {
 	extern __shared__ Npp8u sdata[];
 	//// each thread loads one element from global to shared mem
@@ -274,7 +276,7 @@ Max8uGPU(Npp8u * pSrc_Dev, Npp8u * pMax_Dev)
 
 // Subtract Min from Source and set it to Destination
 __global__ void 
-SubMin8uGPU(Npp8u * pDst_Dev, Npp8u * pSrc_Dev, Npp8u nMin_Dev)
+SubMin8uTHR(Npp8u * pDst_Dev, Npp8u * pSrc_Dev, Npp8u nMin_Dev)
 {
 	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
 	pDst_Dev[i] = pSrc_Dev[i] - nMin_Dev;
@@ -282,7 +284,7 @@ SubMin8uGPU(Npp8u * pDst_Dev, Npp8u * pSrc_Dev, Npp8u nMin_Dev)
 
 // multiply by nConstant and divide by 2 ^ nScaleFactor-1
 __global__ void 
-MulDiv8uGPU(Npp8u * pDst_Dev, Npp8u nConstant, int nScaleFactorMinus1)
+MulDiv8uTHR(Npp8u * pDst_Dev, Npp8u nConstant, int nScaleFactorMinus1)
 {
 	unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
 	int divider = 1;
